@@ -41,7 +41,8 @@ class conversiontracking extends Module {
 		if (Shop::isFeatureActive()) {
 			Shop::setContext(Shop::CONTEXT_ALL);
 		}
-		return parent::install();
+		return parent::install() &&
+			$this->registerHook('displayOrderConfirmation');
 	}
 
 	public function uninstall() {
@@ -50,7 +51,21 @@ class conversiontracking extends Module {
 
 	// Admin screen
 	public function getContent() {
+		// TODO: implement me
+		return '';
 	}
 
 	// Hooks
+	public function hookDisplayOrderConfirmation($params) {
+		$fbTrackingIds = array('6018368151287', '6015469448538');
+		$adwordsTrackingIds = array('988298912');
+
+
+		$this->smarty->assign(array(
+			'fbTrackingIds' => $fbTrackingIds,
+			'adwordsTrackingIds' => $adwordsTrackingIds
+		));
+
+		return $this->display(__FILE__, 'displayOrderConfirmation.tpl');
+	}
 }
