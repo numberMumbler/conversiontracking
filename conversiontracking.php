@@ -52,18 +52,21 @@ class conversiontracking extends Module {
 	// Admin screen
 	public function getContent() {
 		// TODO: implement me
-		return '';
+		return '<center>Under Construction</center>';
 	}
 
 	// Hooks
 	public function hookDisplayOrderConfirmation($params) {
-		$fbTrackingIds = array('6018368151287', '6015469448538');
-		$adwordsTrackingIds = array('988298912');
+		$fbTrackers = array(array('id' => '6018368151287'),
+							   array('id' => '6015469448538'));
+		$adwordsTrackers = array(array('id' => '988298912', 'label' => 'QOXQCODEhVcQoP2g1wM'));
 
+		$orderTotal = $params['total_to_pay'];
 
 		$this->smarty->assign(array(
-			'fbTrackingIds' => $fbTrackingIds,
-			'adwordsTrackingIds' => $adwordsTrackingIds
+			'fbTrackers' => $fbTrackers,
+			'adwordsTrackers' => $adwordsTrackers,
+			'orderTotal' => $orderTotal
 		));
 
 		return $this->display(__FILE__, 'displayOrderConfirmation.tpl');
