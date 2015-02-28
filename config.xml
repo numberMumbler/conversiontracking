@@ -2,7 +2,7 @@
 <module>
 	<name>conversiontracking</name>
 	<displayName><![CDATA[Conversion Tracking]]></displayName>
-	<version><![CDATA[0.0.1]]></version>
+	<version><![CDATA[0.1.0]]></version>
 	<description><![CDATA[Include and manage tracking scripts for various marketing services]]></description>
 	<author><![CDATA[David Janke]]></author>
 	<tab><![CDATA[advertising_marketing]]></tab>
