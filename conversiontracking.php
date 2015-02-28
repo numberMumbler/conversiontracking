@@ -209,8 +209,17 @@ class conversiontracking extends Module
 	/**
 	 * Hooks
 	 */
-	public function hookDisplayOrderConfirmation()
+	public function hookDisplayOrderConfirmation($params)
 	{
-		/* Place your code here. */
+		$fbTrackers = array();
+		$adwordsTrackers = array();
+
+		$this->smarty->assign(array(
+			'fbTrackers' => $fbTrackers,
+			'adwordsTrackers' => $adwordsTrackers,
+			'orderTotal' => $params['total_to_pay']
+		));
+
+		return $this->display(__FILE__, 'displayOrderConfirmation.tpl');
 	}
 }
