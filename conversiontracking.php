@@ -35,7 +35,7 @@ class conversiontracking extends Module
 	{
 		$this->name = 'conversiontracking';
 		$this->tab = 'advertising_marketing';
-		$this->version = '0.0.1';
+		$this->version = '0.1.0';
 		$this->author = 'David Janke';
 		$this->need_instance = 0;
 
@@ -207,16 +207,19 @@ class conversiontracking extends Module
 	}
 
 	/**
-	 * Add the CSS & JavaScript files you want to be added on the FO.
+	 * Hooks
 	 */
-	public function hookHeader()
+	public function hookDisplayOrderConfirmation($params)
 	{
-		$this->context->controller->addJS($this->_path.'/js/front.js');
-		$this->context->controller->addCSS($this->_path.'/css/front.css');
-	}
+		$fbTrackers = array();
+		$adwordsTrackers = array();
 
-	public function hookDisplayOrderConfirmation()
-	{
-		/* Place your code here. */
+		$this->smarty->assign(array(
+			'fbTrackers' => $fbTrackers,
+			'adwordsTrackers' => $adwordsTrackers,
+			'orderTotal' => $params['total_to_pay']
+		));
+
+		return $this->display(__FILE__, 'displayOrderConfirmation.tpl');
 	}
 }
