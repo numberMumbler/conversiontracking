@@ -30,13 +30,14 @@ $sql = array();
 $sql[] = 'CREATE TABLE IF NOT EXISTS `'._DB_PREFIX_.'conversiontracking_service` (
     `id_conversiontracking_service` int(11) NOT NULL AUTO_INCREMENT,
     `service_id` varchar(24) NOT NULL,
-    `service_name` varchar(128) NOT NULL,
+    `service_name` varchar(64) NOT NULL,
     PRIMARY KEY  (`id_conversiontracking_service`)
 ) ENGINE='._MYSQL_ENGINE_.' DEFAULT CHARSET=utf8;';
 
 $sql[] = 'CREATE TABLE IF NOT EXISTS `'._DB_PREFIX_.'conversiontracking_field` (
 	`id_conversiontracking_field` int(11) NOT NULL AUTO_INCREMENT,
 	`id_conversiontracking_service` int(11) NOT NULL,
+	`field_id` varchar(24) NOT NULL,
 	`field_name` varchar(32) NOT NULL,
 	`field_description` varchar(128),
 	`validation_expression` varchar(64),
@@ -70,9 +71,10 @@ VALUES
 	('adwords', 'Google AdWords');";
 
 $sql[] = "INSERT INTO `"._DB_PREFIX_."conversiontracking_field`
-	(`id_conversiontracking_service`, `field_name`, `field_description`, `validation_expression`, `validation_message`)
+	(`id_conversiontracking_service`, `field_id`, `field_name`, `field_description`, `validation_expression`, `validation_message`)
 SELECT
 	`"._DB_PREFIX_."conversiontracking_service`.`id_conversiontracking_service`,
+	`fields`.`field_id`,
 	`fields`.`field_name`,
 	`fields`.`field_description`,
 	`fields`.`validation_expression`,
@@ -80,12 +82,14 @@ SELECT
 FROM `"._DB_PREFIX_."conversiontracking_service`
 INNER JOIN (
 	SELECT
+		'id' as `field_id`,
 		'ID' as `field_name`,
 		'google_conversion_id' as `field_description`,
 		'^[0-9]+$' as `validation_expression`,
 		'ID can only contain numbers' as `validation_message`
 	UNION ALL
 	SELECT
+		'label' as `field_id`,
 		'Label' as `field_name`,
 		'google_conversion_label' as `field_description`,
 		'^[A-Za-z0-9]+$' as `validation_expression`,
@@ -103,9 +107,10 @@ VALUES
 	('fbPixel', 'Facebook Conversion Tracking Pixel');";
 
 $sql[] = "INSERT INTO `"._DB_PREFIX_."conversiontracking_field`
-	(`id_conversiontracking_service`, `field_name`, `field_description`, `validation_expression`, `validation_message`)
+	(`id_conversiontracking_service`, `field_id`, `field_name`, `field_description`, `validation_expression`, `validation_message`)
 SELECT
 	`"._DB_PREFIX_."conversiontracking_service`.`id_conversiontracking_service`,
+	'id' as `field_id`,
 	'ID' as `field_name`,
 	'Checkout Pixel ID' as `field_description`,
 	'^[0-9]+$' as `validation_expression`,
