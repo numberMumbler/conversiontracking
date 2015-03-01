@@ -51,3 +51,23 @@ function fetchScriptTemplateData($groupId, $shopId) {
 
 	return $scriptTemplateData;
 }
+
+function fetchActiveServices($groupId, $shopId) {
+	$serviceIds = array();
+
+	$sql = 'SELECT DISTINCT `'._DB_PREFIX_.'conversiontracking_service`.`template_service_id`
+	FROM `'._DB_PREFIX_.'conversiontracking`
+	INNER JOIN `'._DB_PREFIX_.'conversiontracking_service`
+		ON `'._DB_PREFIX_.'conversiontracking`.`id_conversiontracking_service` = `'._DB_PREFIX_.'conversiontracking_service`.`id_conversiontracking_service`
+	WHERE `'._DB_PREFIX_.'conversiontracking`.`id_group` in (0, '. (int)$groupId .')
+	AND `'._DB_PREFIX_.'conversiontracking`.`id_shop` in (0, '. (int)$shopId .');';
+
+	if($results = Db::getInstance()->ExecuteS($sql)) {
+		foreach($results as $row) {
+			if($serviceId = $row['template_service_id']) {
+				$serviceIds[] = $serviceId;
+			}
+		}
+	}
+	return $serviceIds;
+}

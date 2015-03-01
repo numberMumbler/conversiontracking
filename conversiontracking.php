@@ -67,7 +67,8 @@ class conversiontracking extends Module
 		return parent::install() &&
 			$this->registerHook('header') &&
 			$this->registerHook('backOfficeHeader') &&
-			$this->registerHook('displayOrderConfirmation');
+			$this->registerHook('displayOrderConfirmation') &&
+			$this->registerHook('displayFooterProduct');
 	}
 
 	public function uninstall()
@@ -231,5 +232,18 @@ class conversiontracking extends Module
 		));
 
 		return $this->display(__FILE__, 'displayOrderConfirmation.tpl');
+	}
+
+	public function hookDisplayFooterProduct($params)
+	{
+		$groupId = (int)$this->context->shop->getContextShopGroupID();
+		$shopId = (int)$this->context->shop->getContextShopID();
+		$activeServices = fetchActiveServices($groupId, $shopId);
+
+		$this->smarty->assign(array(
+			'activeServices' => $activeServices
+		));
+		
+		return $this->display(__FILE__, 'displayFooterProduct.tpl');	
 	}
 }
