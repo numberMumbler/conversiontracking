@@ -27,6 +27,8 @@
 if (!defined('_PS_VERSION_'))
 	exit;
 
+require_once(dirname(__FILE__).'/dataAccess.php');
+
 class conversiontracking extends Module
 {
 	protected $config_form = false;
@@ -211,8 +213,16 @@ class conversiontracking extends Module
 	 */
 	public function hookDisplayOrderConfirmation($params)
 	{
-		$fbTrackers = array();
-		$adwordsTrackers = array();
+		$groupId = (int)$this->context->shop->getContextShopGroupID();
+		$shopId = (int)$this->context->shop->getContextShopID();
+		$scriptTemplateData = fetchScriptTemplateData($groupId, $shopId);
+
+		$fbTrackers = array_key_exists('fbPixel', $scriptTemplateData) ?
+			$scriptTemplateData['fbPixel'] :
+			array();
+		$adwordsTrackers = array_key_exists('adwords', $scriptTemplateData) ?
+			$scriptTemplateData['adwords'] :
+			array();;
 
 		$this->smarty->assign(array(
 			'fbTrackers' => $fbTrackers,

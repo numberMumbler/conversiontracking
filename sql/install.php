@@ -26,11 +26,103 @@
 
 $sql = array();
 
-$sql[] = 'CREATE TABLE IF NOT EXISTS `'._DB_PREFIX_.'conversiontracking` (
-    `id_conversiontracking` int(11) NOT NULL AUTO_INCREMENT,
-    PRIMARY KEY  (`id_conversiontracking`)
+/* Create tables */
+$sql[] = 'CREATE TABLE IF NOT EXISTS `'._DB_PREFIX_.'conversiontracking_service` (
+    `id_conversiontracking_service` int(11) NOT NULL AUTO_INCREMENT,
+    `template_service_id` varchar(24) NOT NULL,
+    `service_name` varchar(64) NOT NULL,
+    PRIMARY KEY  (`id_conversiontracking_service`)
 ) ENGINE='._MYSQL_ENGINE_.' DEFAULT CHARSET=utf8;';
 
+$sql[] = 'CREATE TABLE IF NOT EXISTS `'._DB_PREFIX_.'conversiontracking_field` (
+	`id_conversiontracking_field` int(11) NOT NULL AUTO_INCREMENT,
+	`id_conversiontracking_service` int(11) NOT NULL,
+	`template_field_id` varchar(24) NOT NULL,
+	`field_name` varchar(32) NOT NULL,
+	`field_description` varchar(128),
+	`validation_expression` varchar(64),
+	`validation_message` varchar(64),
+	PRIMARY KEY (`id_conversiontracking_field`)
+) ENGINE='._MYSQL_ENGINE_.' DEFAULT CHARSET=utf8;';
+
+$sql[] = 'CREATE TABLE IF NOT EXISTS `'._DB_PREFIX_.'conversiontracking` (
+	`id_conversiontracking` int(11) NOT NULL AUTO_INCREMENT,
+	`id_conversiontracking_service` int(11) NOT NULL,
+	`id_group` int(11) NOT NULL DEFAULT 0,
+	`id_shop` int(11) NOT NULL DEFAULT 0,
+	PRIMARY KEY (`id_conversiontracking`),
+	INDEX idx_group_shop (`id_group`, `id_shop`)
+) ENGINE='._MYSQL_ENGINE_.' DEFAULT CHARSET=utf8;';
+
+$sql[] = 'CREATE TABLE IF NOT EXISTS `'._DB_PREFIX_.'conversiontracking_value` (
+	`id_conversiontracking_value` int(11) NOT NULL AUTO_INCREMENT,
+	`id_conversiontracking` int(11) NOT NULL,
+	`id_conversiontracking_field` int(11) NOT NULL,
+	`field_value` varchar(32),
+	PRIMARY KEY (`id_conversiontracking_value`),
+	INDEX idx_conversiontracking (`id_conversiontracking`)
+) ENGINE='._MYSQL_ENGINE_.' DEFAULT CHARSET=utf8;';
+
+
+/* Define service: Google AdWords */
+$sql[] = "INSERT INTO `"._DB_PREFIX_."conversiontracking_service`
+	(`template_service_id`, `service_name`)
+VALUES
+	('adwords', 'Google AdWords');";
+
+$sql[] = "INSERT INTO `"._DB_PREFIX_."conversiontracking_field`
+	(`id_conversiontracking_service`, `template_field_id`, `field_name`, `field_description`, `validation_expression`, `validation_message`)
+SELECT
+	`"._DB_PREFIX_."conversiontracking_service`.`id_conversiontracking_service`,
+	`fields`.`template_field_id`,
+	`fields`.`field_name`,
+	`fields`.`field_description`,
+	`fields`.`validation_expression`,
+	`fields`.`validation_message`
+FROM `"._DB_PREFIX_."conversiontracking_service`
+INNER JOIN (
+	SELECT
+		'id' as `template_field_id`,
+		'ID' as `field_name`,
+		'google_conversion_id' as `field_description`,
+		'^[0-9]+$' as `validation_expression`,
+		'ID can only contain numbers' as `validation_message`
+	UNION ALL
+	SELECT
+		'label' as `template_field_id`,
+		'Label' as `field_name`,
+		'google_conversion_label' as `field_description`,
+		'^[A-Za-z0-9]+$' as `validation_expression`,
+		'Label can only contain letters and numbers' as `validation_message`
+) `fields`
+LEFT JOIN `"._DB_PREFIX_."conversiontracking_field`
+	ON `"._DB_PREFIX_."conversiontracking_service`.`id_conversiontracking_service` = `"._DB_PREFIX_."conversiontracking_field`.`id_conversiontracking_service`
+WHERE `"._DB_PREFIX_."conversiontracking_service`.`template_service_id` = 'adwords'
+	AND `"._DB_PREFIX_."conversiontracking_field`.`id_conversiontracking_field` IS NULL;";
+
+/* Define service: Facebook Conversion Pixel */
+$sql[] = "INSERT INTO `"._DB_PREFIX_."conversiontracking_service`
+	(`template_service_id`, `service_name`)
+VALUES
+	('fbPixel', 'Facebook Conversion Tracking Pixel');";
+
+$sql[] = "INSERT INTO `"._DB_PREFIX_."conversiontracking_field`
+	(`id_conversiontracking_service`, `template_field_id`, `field_name`, `field_description`, `validation_expression`, `validation_message`)
+SELECT
+	`"._DB_PREFIX_."conversiontracking_service`.`id_conversiontracking_service`,
+	'id' as `template_field_id`,
+	'ID' as `field_name`,
+	'Checkout Pixel ID' as `field_description`,
+	'^[0-9]+$' as `validation_expression`,
+	'ID can only contain numbers' as `validation_message`
+FROM `"._DB_PREFIX_."conversiontracking_service`
+LEFT JOIN `"._DB_PREFIX_."conversiontracking_field`
+	ON `"._DB_PREFIX_."conversiontracking_service`.`id_conversiontracking_service` = `"._DB_PREFIX_."conversiontracking_field`.`id_conversiontracking_service`
+WHERE `"._DB_PREFIX_."conversiontracking_service`.`template_service_id` = 'fbPixel'
+	AND `"._DB_PREFIX_."conversiontracking_field`.`id_conversiontracking_field` IS NULL;";
+
+
+/* Execute */
 foreach ($sql as $query)
 	if (Db::getInstance()->execute($query) == false)
 		return false;
