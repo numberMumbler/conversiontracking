@@ -32,6 +32,11 @@
 
 $sql = array();
 
+$sql[] = 'DROP TABLE ps_conversiontracking_value;';
+$sql[] = 'DROP TABLE ps_conversiontracking;';
+$sql[] = 'DROP TABLE ps_conversiontracking_field;';
+$sql[] = 'DROP TABLE ps_conversiontracking_service;';
+
 foreach ($sql as $query)
 	if (Db::getInstance()->execute($query) == false)
 		return false;
