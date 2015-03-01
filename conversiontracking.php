@@ -236,6 +236,14 @@ class conversiontracking extends Module
 
 	public function hookDisplayFooterProduct($params)
 	{
+		$groupId = (int)$this->context->shop->getContextShopGroupID();
+		$shopId = (int)$this->context->shop->getContextShopID();
+		$activeServices = fetchActiveServices($groupId, $shopId);
+
+		$this->smarty->assign(array(
+			'activeServices' => $activeServices
+		));
+		
 		return $this->display(__FILE__, 'displayFooterProduct.tpl');	
 	}
 }
