@@ -26,11 +26,45 @@
 
 $sql = array();
 
-$sql[] = 'CREATE TABLE IF NOT EXISTS `'._DB_PREFIX_.'conversiontracking` (
-    `id_conversiontracking` int(11) NOT NULL AUTO_INCREMENT,
-    PRIMARY KEY  (`id_conversiontracking`)
+/* Create tables */
+$sql[] = 'CREATE TABLE IF NOT EXISTS `'._DB_PREFIX_.'conversiontracking_service` (
+    `id_conversiontracking_service` int(11) NOT NULL AUTO_INCREMENT,
+    `service_name` varchar(24) NOT NULL,
+    `service_description` varchar(128),
+    PRIMARY KEY  (`id_conversiontracking_service`)
 ) ENGINE='._MYSQL_ENGINE_.' DEFAULT CHARSET=utf8;';
 
+$sql[] = 'CREATE TABLE IF NOT EXISTS `'._DB_PREFIX_.'conversiontracking_field` (
+	`id_conversiontracking_field` int(11) NOT NULL AUTO_INCREMENT,
+	`id_conversiontracking_service` int(11) NOT NULL,
+	`field_name` varchar(32) NOT NULL,
+	`field_description` varchar(128),
+	`validation_expression` varchar(64),
+	`validation_message` varchar(64),
+	PRIMARY KEY (`id_conversiontracking_field`)
+) ENGINE='._MYSQL_ENGINE_.' DEFAULT CHARSET=utf8;';
+
+$sql[] = 'CREATE TABLE IF NOT EXISTS `'._DB_PREFIX_.'conversiontracking` (
+	`id_conversiontracking` int(11) NOT NULL AUTO_INCREMENT,
+	`id_conversiontracking_service` int(11) NOT NULL,
+	`id_group` int(11) NOT NULL DEFAULT 0,
+	`id_shop` int(11) NOT NULL DEFAULT 0,
+	PRIMARY KEY (`id_conversiontracking`),
+	INDEX idx_group_shop (`id_group`, `id_shop`)
+) ENGINE='._MYSQL_ENGINE_.' DEFAULT CHARSET=utf8;';
+
+$sql[] = 'CREATE TABLE IF NOT EXISTS `'._DB_PREFIX_.'conversiontracking_value` (
+	`id_conversiontracking_value` int(11) NOT NULL AUTO_INCREMENT,
+	`id_conversiontracking` int(11) NOT NULL,
+	`id_conversiontracking_field` int(11) NOT NULL,
+	`field_value` varchar(32),
+	PRIMARY KEY (`id_conversiontracking_value`),
+	INDEX idx_conversiontracking (`id_conversiontracking`)
+) ENGINE='._MYSQL_ENGINE_.' DEFAULT CHARSET=utf8;';
+
+
+
+/* Execute */
 foreach ($sql as $query)
 	if (Db::getInstance()->execute($query) == false)
 		return false;
