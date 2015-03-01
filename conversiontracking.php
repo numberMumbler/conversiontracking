@@ -67,7 +67,8 @@ class conversiontracking extends Module
 		return parent::install() &&
 			$this->registerHook('header') &&
 			$this->registerHook('backOfficeHeader') &&
-			$this->registerHook('displayOrderConfirmation');
+			$this->registerHook('displayOrderConfirmation') &&
+			$this->registerHook('displayFooterProduct');
 	}
 
 	public function uninstall()
@@ -231,5 +232,10 @@ class conversiontracking extends Module
 		));
 
 		return $this->display(__FILE__, 'displayOrderConfirmation.tpl');
+	}
+
+	public function hookDisplayFooterProduct($params)
+	{
+		return $this->display(__FILE__, 'displayFooterProduct.tpl');	
 	}
 }
