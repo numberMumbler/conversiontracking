@@ -29,8 +29,8 @@ $sql = array();
 /* Create tables */
 $sql[] = 'CREATE TABLE IF NOT EXISTS `'._DB_PREFIX_.'conversiontracking_service` (
     `id_conversiontracking_service` int(11) NOT NULL AUTO_INCREMENT,
-    `service_name` varchar(24) NOT NULL,
-    `service_description` varchar(128),
+    `service_id` varchar(24) NOT NULL,
+    `service_name` varchar(128) NOT NULL,
     PRIMARY KEY  (`id_conversiontracking_service`)
 ) ENGINE='._MYSQL_ENGINE_.' DEFAULT CHARSET=utf8;';
 
@@ -65,7 +65,7 @@ $sql[] = 'CREATE TABLE IF NOT EXISTS `'._DB_PREFIX_.'conversiontracking_value` (
 
 /* Define service: Google AdWords */
 $sql[] = "INSERT INTO `"._DB_PREFIX_."conversiontracking_service`
-	(`service_name`, `service_description`)
+	(`service_id`, `service_name`)
 VALUES
 	('adwords', 'Google AdWords');";
 
@@ -93,12 +93,12 @@ INNER JOIN (
 ) `fields`
 LEFT JOIN `"._DB_PREFIX_."conversiontracking_field`
 	ON `"._DB_PREFIX_."conversiontracking_service`.`id_conversiontracking_service` = `"._DB_PREFIX_."conversiontracking_field`.`id_conversiontracking_service`
-WHERE `"._DB_PREFIX_."conversiontracking_service`.`service_name` = 'adwords'
+WHERE `"._DB_PREFIX_."conversiontracking_service`.`service_id` = 'adwords'
 	AND `"._DB_PREFIX_."conversiontracking_field`.`id_conversiontracking_field` IS NULL;";
 
 /* Define service: Facebook Conversion Pixel */
 $sql[] = "INSERT INTO `"._DB_PREFIX_."conversiontracking_service`
-	(`service_name`, `service_description`)
+	(`service_id`, `service_name`)
 VALUES
 	('fbPixel', 'Facebook Conversion Tracking Pixel');";
 
@@ -113,7 +113,7 @@ SELECT
 FROM `"._DB_PREFIX_."conversiontracking_service`
 LEFT JOIN `"._DB_PREFIX_."conversiontracking_field`
 	ON `"._DB_PREFIX_."conversiontracking_service`.`id_conversiontracking_service` = `"._DB_PREFIX_."conversiontracking_field`.`id_conversiontracking_service`
-WHERE `"._DB_PREFIX_."conversiontracking_service`.`service_name` = 'fbPixel'
+WHERE `"._DB_PREFIX_."conversiontracking_service`.`service_id` = 'fbPixel'
 	AND `"._DB_PREFIX_."conversiontracking_field`.`id_conversiontracking_field` IS NULL;";
 
 
