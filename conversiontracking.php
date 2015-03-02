@@ -218,10 +218,12 @@ class conversiontracking extends Module
 		if($order) {
 			$orderId = $order->reference;
 			$orderTotal = $order->total_products;
+			$orderProducts = $order->getProductsDetail();
 		} else {
 			Logger::addLog('Unable to access order object', 3);
 			$orderId = 'ST'.date('YmdHis');
 			$orderTotal = $params['total_to_pay'];
+			$orderProducts = array();
 		}
 
 		$groupId = (int)$this->context->shop->getContextShopGroupID();
@@ -243,7 +245,8 @@ class conversiontracking extends Module
 			'adwordsTrackers' => $adwordsTrackers,
 			'bandpageTrackers' => $bandpageTrackers,
 			'orderTotal' => $orderTotal,
-			'orderId' => $orderId
+			'orderId' => $orderId,
+			'orderProducts' => $orderProducts
 		));
 
 		return $this->display(__FILE__, 'displayOrderConfirmation.tpl');
