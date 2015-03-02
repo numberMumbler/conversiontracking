@@ -214,6 +214,18 @@ class conversiontracking extends Module
 	 */
 	public function hookDisplayOrderConfirmation($params)
 	{
+		$order = $params['objOrder'];
+		if($order) {
+			$orderId = $order->reference;
+			$orderTotal = $order->total_products;
+			$orderProducts = $order->getProductsDetail();
+		} else {
+			Logger::addLog('Unable to access order object', 3);
+			$orderId = 'ST'.date('YmdHis');
+			$orderTotal = $params['total_to_pay'];
+			$orderProducts = array();
+		}
+
 		$groupId = (int)$this->context->shop->getContextShopGroupID();
 		$shopId = (int)$this->context->shop->getContextShopID();
 		$scriptTemplateData = fetchScriptTemplateData($groupId, $shopId);
@@ -223,12 +235,18 @@ class conversiontracking extends Module
 			array();
 		$adwordsTrackers = array_key_exists('adwords', $scriptTemplateData) ?
 			$scriptTemplateData['adwords'] :
-			array();;
+			array();
+		$bandpageTrackers = array_key_exists('bandpage', $scriptTemplateData) ?
+			$scriptTemplateData['bandpage'] :
+			array();
 
 		$this->smarty->assign(array(
 			'fbTrackers' => $fbTrackers,
 			'adwordsTrackers' => $adwordsTrackers,
-			'orderTotal' => $params['total_to_pay']
+			'bandpageTrackers' => $bandpageTrackers,
+			'orderTotal' => $orderTotal,
+			'orderId' => $orderId,
+			'orderProducts' => $orderProducts
 		));
 
 		return $this->display(__FILE__, 'displayOrderConfirmation.tpl');

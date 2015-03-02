@@ -50,5 +50,34 @@
 	{/foreach}
 	</section>
 {/if}
+{if isset($bandpageTrackers) AND $bandpageTrackers}
+	<section>
+	{foreach from=$bandpageTrackers item=bandpageTracker}
+		<script type="text/javascript">
+		/*<![CDATA[ */
+		var BANDPAGE_RETAILER = '{$bandpageTracker.id}';
+		var BANDPAGE_ORDER_ID = '{$orderId}';
+		
+		{if isset($orderProducts) AND $orderProducts AND $orderProducts|@count gt 0}
+			{assign var=orderProductIndex value=0}
+			{foreach from=$orderProducts item=orderProduct}
+				{assign var=orderProductIndex value=$orderProductIndex+1}
+
+				var BANDPAGE_SKU_ID_{$orderProductIndex} = '{$orderProduct.product_reference}';
+				var BANDPAGE_AMOUNT_{$orderProductIndex} = '{$orderProduct.unit_price_tax_excl}';
+				var BANDPAGE_CAT_{$orderProductIndex} = 'merchandise';
+			{/foreach}
+		{else}
+
+			var BANDPAGE_AMOUNT_1 = '{$orderTotal}';
+			var BANDPAGE_CAT_1 = 'merchandise';
+		{/if}
+
+		/* ]]> */
+		</script>
+		<script src="//www.bandpage.com/ecommerce/convert"></script>
+	{/foreach}
+	</section>
+{/if}
 </section>
 <!-- /MODULE Conversion Tracking -->
