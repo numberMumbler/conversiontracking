@@ -50,5 +50,20 @@
 	{/foreach}
 	</section>
 {/if}
+{if isset($bandpageTrackers) AND $bandpageTrackers}
+	<section>
+	{foreach from=$bandpageTrackers item=bandpageTracker}
+		<script type="text/javascript">
+		/*<![CDATA[ */
+		var BANDPAGE_RETAILER = 'dreamermedia';
+		var BANDPAGE_ORDER_ID = '{$orderId}';
+		 
+		var BANDPAGE_AMOUNT_1 = '{$orderTotal}';
+		var BANDPAGE_CAT_1 = 'merchandise';
+		/* ]]> */
+		</script>
+	{/foreach}
+	</section>
+{/if}
 </section>
 <!-- /MODULE Conversion Tracking -->

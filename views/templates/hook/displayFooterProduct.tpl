@@ -1,6 +1,5 @@
 <!-- MODULE Conversion Tracking -->
-{if "adwords"|in_array:$activeServices}
-{/if}
-{if "fbPixel"|in_array:$activeServices}
+{if "bandpage"|in_array:$activeServices}
+	<script src="//www.bandpage.com/ecommerce/transfer"></script>
 {/if}
 <!-- /MODULE Conversion Tracking -->

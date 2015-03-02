@@ -41,7 +41,7 @@ $sql[] = 'CREATE TABLE IF NOT EXISTS `'._DB_PREFIX_.'conversiontracking_field` (
 	`field_name` varchar(32) NOT NULL,
 	`field_description` varchar(128),
 	`validation_expression` varchar(64),
-	`validation_message` varchar(64),
+	`validation_message` varchar(128),
 	PRIMARY KEY (`id_conversiontracking_field`)
 ) ENGINE='._MYSQL_ENGINE_.' DEFAULT CHARSET=utf8;';
 
@@ -120,6 +120,28 @@ LEFT JOIN `"._DB_PREFIX_."conversiontracking_field`
 	ON `"._DB_PREFIX_."conversiontracking_service`.`id_conversiontracking_service` = `"._DB_PREFIX_."conversiontracking_field`.`id_conversiontracking_service`
 WHERE `"._DB_PREFIX_."conversiontracking_service`.`template_service_id` = 'fbPixel'
 	AND `"._DB_PREFIX_."conversiontracking_field`.`id_conversiontracking_field` IS NULL;";
+
+/* Define service: BandPage */
+$sql[] = "INSERT INTO `"._DB_PREFIX_."conversiontracking_service`
+	(`template_service_id`, `service_name`)
+VALUES
+	('bandpage', 'BandPage');";
+
+$sql[] = "INSERT INTO `"._DB_PREFIX_."conversiontracking_field`
+	(`id_conversiontracking_service`, `template_field_id`, `field_name`, `field_description`, `validation_expression`, `validation_message`)
+SELECT
+	`"._DB_PREFIX_."conversiontracking_service`.`id_conversiontracking_service`,
+	'id' as `template_field_id`,
+	'Retailer ID' as `field_name`,
+	'BandPage Retailer ID' as `field_description`,
+	'^[^<>{}]+$' as `validation_expression`,
+	'Retailer ID cannot contain angle brackets (<, >) or braces ({, })' as `validation_message`
+FROM `"._DB_PREFIX_."conversiontracking_service`
+LEFT JOIN `"._DB_PREFIX_."conversiontracking_field`
+	ON `"._DB_PREFIX_."conversiontracking_service`.`id_conversiontracking_service` = `"._DB_PREFIX_."conversiontracking_field`.`id_conversiontracking_service`
+WHERE `"._DB_PREFIX_."conversiontracking_service`.`template_service_id` = 'bandpage'
+	AND `"._DB_PREFIX_."conversiontracking_field`.`id_conversiontracking_field` IS NULL;";
+
 
 
 /* Execute */
