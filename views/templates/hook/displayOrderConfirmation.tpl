@@ -62,6 +62,7 @@
 		var BANDPAGE_CAT_1 = 'merchandise';
 		/* ]]> */
 		</script>
+		<script src="//www.bandpage.com/ecommerce/convert"></script>
 	{/foreach}
 	</section>
 {/if}
