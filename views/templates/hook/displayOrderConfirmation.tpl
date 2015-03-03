@@ -61,11 +61,15 @@
 		{if isset($orderProducts) AND $orderProducts AND $orderProducts|@count gt 0}
 			{assign var=orderProductIndex value=0}
 			{foreach from=$orderProducts item=orderProduct}
+				{assign var=orderProductQty value=0}
+				{while $orderProductQty lt $orderProduct.product_quantity}
+				{assign var=orderProductQty value=$orderProductQty+1}
 				{assign var=orderProductIndex value=$orderProductIndex+1}
 
 				var BANDPAGE_SKU_ID_{$orderProductIndex} = '{$orderProduct.product_reference}';
 				var BANDPAGE_AMOUNT_{$orderProductIndex} = '{$orderProduct.unit_price_tax_excl}';
 				var BANDPAGE_CAT_{$orderProductIndex} = 'merchandise';
+				{/while}
 			{/foreach}
 		{else}
 
