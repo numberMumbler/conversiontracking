@@ -57,7 +57,6 @@
 		/*<![CDATA[ */
 		var BANDPAGE_RETAILER = '{$bandpageTracker.id}';
 		var BANDPAGE_ORDER_ID = '{$orderId}';
-		
 		{if isset($orderProducts) AND $orderProducts AND $orderProducts|@count gt 0}
 			{assign var=orderProductIndex value=0}
 			{foreach from=$orderProducts item=orderProduct}
